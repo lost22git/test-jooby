@@ -1,0 +1,78 @@
+plugins {
+  id("application")
+  alias(libs.plugins.shadow)
+  alias(libs.plugins.ebean)
+  alias(libs.plugins.jooby)
+  alias(libs.plugins.jooby.openapi)
+}
+
+def versionCatalog = extensions.getByType(VersionCatalogsExtension).named("libs")
+def joobyVersion = versionCatalog.findVersion("jooby").get()
+
+dependencies {
+  // logging
+  implementation(libs.logback)
+
+  // jackson json
+  implementation(libs.bundles.jackson)
+
+  // record builder
+  annotationProcessor(libs.record.builder.processor)
+  implementation(libs.record.builder)
+
+  // ebean
+  annotationProcessor(libs.ebean.querybean.generator)
+  implementation(libs.ebean.querybean)
+  implementation(libs.ebean)
+
+  // sqlite
+  runtimeOnly(libs.sqlite)
+
+  // swagger
+  compileOnly(libs.swagger.annotation)
+
+  // jooby
+  implementation(platform(libs.jooby))
+  annotationProcessor("io.jooby:jooby-apt:${joobyVersion}") //TODO: not respect bom, why?
+  implementation("io.jooby:jooby-jackson")
+  implementation("io.jooby:jooby-openapi")
+  implementation("io.jooby:jooby-ebean")
+  implementation("io.jooby:jooby-hikari")
+  implementation("io.jooby:jooby-swagger-ui")
+  // Add corresponding server dep for property from `gradlew -P<property>`
+  if (project.hasProperty("netty")) {
+    runtimeOnly("io.jooby:jooby-netty")
+  } else if (project.hasProperty("jetty")) {
+    runtimeOnly("io.jooby:jooby-jetty")
+  } else {
+    runtimeOnly("io.jooby:jooby-undertow")
+  }
+}
+
+ext {
+  mainClass = "lost.test.jooby.Main"
+}
+
+apply from: "../script/gradle/shadow_jar.gradle"
+
+tasks.withType(JavaCompile).configureEach {
+  options.compilerArgs += [
+    '-Ajooby.incremental=true',
+    '-Ajooby.services=true'
+  ]
+}
+
+
+joobyRun {
+  restartExtensions = ["conf", "properties", "class"]
+  compileExtensions = ["java", "kt"]
+  port = 8080
+  waitTimeBeforeRestart = 500
+  useSingleClassLoader = false
+}
+
+// Run openAPI task on joobyRun
+joobyRun.dependsOn openAPI
+
+// Run openAPI task on build
+jar.dependsOn openAPI

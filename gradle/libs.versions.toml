@@ -2,11 +2,14 @@
 assertj = "3.24.2"
 avaje-jsonb = "1.5-RC1"
 awaitility = "4.2.0"
-easyrandom = "6.1.5"
+easyrandom = "6.2.1"
+ebean = "13.22.0"
+ebean-jakarta = "13.22.0-jakarta"
 immutables = "2.9.3"
 jackson = "2.13.4"
 jetbrains-annotations = "24.0.1"
 jmh = "1.35"
+jooby = "3.0.5"
 junit = "5.9.2"
 logback = "1.4.6"
 logstash-logback-encoder = "7.2"
@@ -16,14 +19,16 @@ plugin-jmh = "0.6.6"
 plugin-jmhReport = "0.9.0"
 plugin-nativeimage = "0.9.16"
 plugin-osdetector = "1.7.1"
-plugin-palantir = "2.33.0"
-plugin-shadow = "7.1.2"
-plugin-spotless = "6.19.0"
+plugin-palantir = "2.38.0"
+plugin-shadow = "8.1.1"
+plugin-spotless = "6.21.0"
 plugin-taskinfo = "1.4.0"
-plugin-version-catalog-update = "0.8.0"
-plugin-versions = "0.46.0"
-record-builder = "36"
-slf4j = "2.0.7"
+plugin-version-catalog-update = "0.8.1"
+plugin-versions = "0.48.0"
+record-builder = "37"
+slf4j = "2.0.9"
+sqlite = "3.43.0.0"
+swagger = "2.2.15"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
@@ -31,6 +36,9 @@ avaje-jsonb = { module = "io.avaje:avaje-jsonb", version.ref = "avaje-jsonb" }
 avaje-jsonb-generator = { module = "io.avaje:avaje-jsonb-generator", version.ref = "avaje-jsonb" }
 awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
 easyrandom-core = { module = "io.github.dvgaba:easy-random-core", version.ref = "easyrandom" }
+ebean = { module = "io.ebean:ebean", version.ref = "ebean-jakarta" }
+ebean-querybean = { module = "io.ebean:ebean-querybean", version.ref = "ebean-jakarta" }
+ebean-querybean-generator = { module = "io.ebean:querybean-generator", version.ref = "ebean-jakarta" }
 immutables = { module = "org.immutables:value", version.ref = "immutables" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-datatype-jdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "jackson" }
@@ -39,6 +47,7 @@ jackson-module-parameter-names = { module = "com.fasterxml.jackson.module:jackso
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
 jmh-core = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
 jmh-generator-annprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh" }
+jooby = { module = "io.jooby:jooby-bom", version.ref = "jooby"}
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
@@ -47,29 +56,34 @@ logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-enc
 record-builder = { module = "io.soabase.record-builder:record-builder-core", version.ref = "record-builder" }
 record-builder-processor = { module = "io.soabase.record-builder:record-builder-processor", version.ref = "record-builder" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+sqlite = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite" }
+swagger-annotation = { module = "io.swagger.core.v3:swagger-annotations-jakarta", version.ref = "swagger" }
 
 [bundles]
 jackson = [
-    "jackson-annotations",
-    "jackson-datatype-jdk8",
-    "jackson-jsr310",
-    "jackson-module-parameter-names",
+  "jackson-annotations",
+  "jackson-datatype-jdk8",
+  "jackson-jsr310",
+  "jackson-module-parameter-names",
 ]
 jmh = [
-    "jmh-core",
-    "jmh-generator-annprocess",
+  "jmh-core",
+  "jmh-generator-annprocess",
 ]
 junit = [
-    "junit-jupiter-api",
-    "junit-jupiter-engine",
-    "junit-jupiter-params",
+  "junit-jupiter-api",
+  "junit-jupiter-engine",
+  "junit-jupiter-params",
 ]
 
 [plugins]
 download = { id = "de.undercouch.download", version.ref = "plugin-download" }
+ebean = { id = "io.ebean", version.ref = "ebean" }
 jcstress = { id = "io.github.reyerizo.gradle.jcstress", version.ref = "plugin-jcstress" }
 jmh = { id = "me.champeau.jmh", version.ref = "plugin-jmh" }
 jmhReport = { id = "io.morethan.jmhreport", version.ref = "plugin-jmhReport" }
+jooby = { id = "io.jooby.run", version.ref = "jooby" }
+jooby-openapi = { id = "io.jooby.openAPI", version.ref = "jooby" }
 nativeimage = { id = "org.graalvm.buildtools.native", version.ref = "plugin-nativeimage" }
 osdetector = { id = "com.google.osdetector", version.ref = "plugin-osdetector" }
 palantir-format = { id = "com.palantir.java-format", version.ref = "plugin-palantir" }
