@@ -2,6 +2,7 @@ package lost.test.jooby;
 
 import static java.time.OffsetDateTime.now;
 import static java.time.ZoneOffset.UTC;
+import static lost.test.jooby.Result.ok;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,17 +13,21 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import io.ebean.Database;
 import io.jooby.Jooby;
 import io.jooby.OpenAPIModule;
+import io.jooby.ReactiveSupport;
 import io.jooby.ebean.EbeanModule;
 import io.jooby.handler.CorsHandler;
 import io.jooby.hikari.HikariModule;
 import io.jooby.jackson.JacksonModule;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main extends Jooby {
 
     {
+        use(ReactiveSupport.concurrent());
+
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new ParameterNamesModule())
                 .registerModule(new Jdk8Module())
@@ -46,6 +51,9 @@ public class Main extends Jooby {
         use(new CorsHandler());
 
         mvc(new FighterController(db));
+
+        get("/baseline/text", (env) -> CompletableFuture.completedFuture("lost"));
+        get("/baseline/json", (env) -> CompletableFuture.completedFuture(ok("lost")));
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
